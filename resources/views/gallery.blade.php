@@ -10,7 +10,11 @@
             <div class="card">
                 <div class="card-body">
                     <div id="flick-img">
-                        <p>Select a category from the left to see images here.</p> 
+                        <?php
+                            foreach($images['photo'] as $photo) { 
+                                 echo '<img src="' . 'http://farm' . $photo["farm"] . '.static.flickr.com/' . $photo["server"] . '/' . $photo["id"] . '_' . $photo["secret"] . '.jpg">'; ;
+                            }
+                        ?>
                     </div>
                 </div>
             </div>
