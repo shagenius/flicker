@@ -11,17 +11,33 @@
 |
 */
 
-Route::get('/', function () {
-    return view('welcome');
-});
-Route::resource('category', 'CategoryController')->only([
-    'index', 'show'
+Route::get('/', 'HomeController@index')->name('home');
+
+Route::get('/gallery/{category}', 'HomeController@gallery')->name('gallery');
+
+Route::get('/categories', 'CategoryController@index')->name('categories.index');
+
+Route::get('/categories/create', 'CategoryController@create')->name('categories.create');
+
+Route::post('/categories', 'CategoryController@store')->name('categories.store');
+
+Route::get('/categories/{id}', 'CategoryController@show')->name('caategories.show');
+    
+Route::get('/categories/{id}/edit', 'CategoryController@edit')->name('caategories.edit');
+
+Route::put('/categories/{id}', 'CategoryController@update')->name('caategories.update');
+
+Route::delete('/categories/{id}', 'CategoryController@destroy')->name('caategories.destroy');
+
+
+Route::resource('users', 'UserController')->parameters([
+    'users' => 'user_id'
 ]);
 
-Route::resource('categories', 'CategoryController')->except([
-    'create', 'store', 'update', 'destroy'
-]);     
 
-Route::resource('users', 'AdminUserController')->parameters([
-    'users' => 'admin_user'
-]);
+Route::resource('users', 'UserController');
+
+Route::get('admin', 'AdminController@index')->name('admin');
+
+Auth::routes();
+

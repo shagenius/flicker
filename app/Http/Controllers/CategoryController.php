@@ -4,9 +4,22 @@ namespace App\Http\Controllers;
 
 use App\Category;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\Input;
+use Illuminate\Support\Facades\Session;
 
 class CategoryController extends Controller
 {
+    /**
+     * Create a new controller instance.
+     *
+     * @return void
+     */
+    public function __construct()
+    {
+        $this->middleware('auth');
+    }
+    
     /**
      * Display a listing of the resource.
      *
@@ -14,7 +27,8 @@ class CategoryController extends Controller
      */
     public function index()
     {
-        //
+        $categories = Category::all();
+        return view('category.index', ['categories' => $categories]);
     }
 
     /**
@@ -24,7 +38,7 @@ class CategoryController extends Controller
      */
     public function create()
     {
-        //
+        return view('category.create');
     }
 
     /**
@@ -35,7 +49,24 @@ class CategoryController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $validator = Validator::make(Input::all(), Category::rules());
+
+        
+        if ($validator->fails()) {
+            return redirect('categories/create')
+                        ->withErrors($validator)
+                        ->withInput();
+        } else {
+            // store
+            $category = new Category;
+            $category->name       = Input::get('name');
+            $category->active      = is_null(Input::get('active')) ? 0 : Input::get('active');
+            $category->save();
+
+            // redirect
+            Session::flash('message', 'Category saved!');
+            return Redirect::to('categories');
+        }
     }
 
     /**
